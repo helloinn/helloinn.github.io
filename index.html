@@ -20,7 +20,6 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="text/javascript">
        (function(){
-          // VOTRE CLÉ PUBLIQUE EMAILJS
           emailjs.init("qpFqoExr3hVCfHkIs"); 
        })();
     </script>
@@ -92,7 +91,7 @@
         h2 { text-align: center; margin-bottom: 20px; font-size: 1.4rem; font-weight: 700; }
         .input-group { margin-bottom: 15px; }
         .input-group input { width: 100%; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 14px; color: #fff; font-size: 1rem; outline: none; transition: border-color 0.3s; }
-        .input-group input:focus { border-color: #FFCC00; } /* Bordure jaune au clic */
+        .input-group input:focus { border-color: #FFCC00; }
         
         .divider { text-align: center; margin: 10px 0 20px; position: relative; }
         .divider::before, .divider::after { content: ''; position: absolute; top: 50%; width: 35%; height: 1px; background: rgba(255, 255, 255, 0.1); }
@@ -100,7 +99,7 @@
         .divider span { color: rgba(255, 255, 255, 0.5); font-size: 0.9rem; padding: 0 10px; font-weight: 500; }
         
         .link-text { text-align: center; margin-top: 10px; font-size: 0.9rem; }
-        .link-text a { color: #FFCC00; text-decoration: none; font-weight: 600; cursor: pointer; } /* Liens jaunes */
+        .link-text a { color: #FFCC00; text-decoration: none; font-weight: 600; cursor: pointer; }
         .link-text a:hover { text-decoration: underline; }
 
         /* Map */
@@ -229,7 +228,7 @@
 
         let currentLang = 'AR';
         let currentView = 'home';
-        let currentRole = 'Client'; // Par défaut : Client
+        let currentRole = 'Client'; 
         let map = null;
 
         const htmlTag = document.documentElement;
@@ -254,7 +253,6 @@
                 navigator.geolocation.getCurrentPosition(function(position) {
                     const lat = position.coords.latitude, lng = position.coords.longitude;
                     map.flyTo([lat, lng], 15);
-                    // Point GPS de l'utilisateur mis en jaune
                     L.circleMarker([lat, lng], { color: '#FFCC00', radius: 8, fillOpacity: 1 }).addTo(map).bindPopup(translations[currentLang].mapTitle).openPopup();
                     const taxiIcon = L.divIcon({ html: '<div class="taxi-marker">🚕</div>', className: '', iconSize: [24, 24] });
                     L.marker([lat + 0.002, lng + 0.002], {icon: taxiIcon}).addTo(map); L.marker([lat - 0.003, lng + 0.001], {icon: taxiIcon}).addTo(map);
@@ -316,7 +314,6 @@
                 user_role: currentRole
             };
 
-            // VOS CLÉS EMAILJS SONT INTÉGRÉES ICI (Service ID et Template ID)
             emailjs.send('service_ebeqht9', 'vt97o33', templateParams)
                 .then(function(response) {
                     statusMsg.innerText = data.statusSuccess; statusMsg.style.color = "#4CAF50";
