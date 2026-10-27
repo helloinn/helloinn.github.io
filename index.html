@@ -317,9 +317,13 @@
             emailjs.send('service_ebeqht9', 'vt97o33', templateParams)
                 .then(function(response) {
                     statusMsg.innerText = data.statusSuccess; statusMsg.style.color = "#4CAF50";
-                    document.getElementById('register-name').value = ''; document.getElementById('register-email').value = ''; document.getElementById('register-password').value = '';
+                    document.getElementById('register-name').value = ''; 
+                    document.getElementById('register-email').value = ''; 
+                    document.getElementById('register-password').value = '';
                 }, function(error) {
-                    statusMsg.innerText = data.statusError; statusMsg.style.color = "#ff4d4d"; console.error("EmailJS Error:", error);
+                    statusMsg.innerText = data.statusError; 
+                    statusMsg.style.color = "#ff4d4d"; 
+                    console.error("EmailJS Error:", error);
                 });
         });
 
