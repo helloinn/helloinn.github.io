@@ -1,0 +1,28 @@
+{
+  "name": "taxipic",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Taxipic - ride-hailing, food delivery and merchant super app for the Pi Network",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "db:generate": "drizzle-kit generate"
+  },
+  "dependencies": {
+    "@netlify/database": "^2.0.1",
+    "@netlify/functions": "^6.0.3",
+    "@stellar/stellar-sdk": "^17.4.0",
+    "drizzle-orm": "^1.0.0-beta.22",
+    "leaflet": "^1.9.4",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "@vitejs/plugin-react": "^6.1.2",
+    "drizzle-kit": "^1.0.0-beta.22",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.5"
+  }
+}
