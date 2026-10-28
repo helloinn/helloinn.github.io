@@ -1,2 +1,17 @@
 /*
   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://sdk.minepi.com https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://unpkg.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https://flagcdn.com https://unpkg.com https://a.basemaps.cartocdn.com https://b.basemaps.cartocdn.com https://c.basemaps.cartocdn.com https://d.basemaps.cartocdn.com; connect-src 'self' https://socialchain.app https://api.emailjs.com; frame-ancestors 'self' https://*.pinet.com https://*.minepi.com; object-src 'none'; base-uri 'self'
+
+/validation-key.txt
+  Content-Type: text/plain; charset=utf-8
+  Cache-Control: no-store
+  X-Content-Type-Options: nosniff
+
+/key.txt
+  Content-Type: text/plain; charset=utf-8
+  Cache-Control: no-store
+  X-Content-Type-Options: nosniff
+
+/pi-app-validation.txt
+  Content-Type: text/plain; charset=utf-8
+  Cache-Control: no-store
+  X-Content-Type-Options: nosniff
