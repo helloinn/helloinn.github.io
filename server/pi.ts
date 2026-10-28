@@ -22,8 +22,6 @@ export type PiPayment = {
   transaction: null | { txid: string; verified: boolean; _link: string };
 };
 
-export type PiUser = { uid: string; username: string; wallet_address?: string };
-
 function serverApiKey(): string {
   const key = process.env.PI_API_KEY;
   if (!key) throw new HttpError(503, "Pi payments are not configured on the server (PI_API_KEY is missing)");
@@ -46,10 +44,8 @@ async function piRequest<T>(path: string, init: RequestInit & { auth: string }):
 
 const keyAuth = () => `Key ${serverApiKey()}`;
 
-// Validates a user access token obtained from Pi.authenticate() on the frontend.
-export function verifyAccessToken(accessToken: string) {
-  return piRequest<PiUser>("/v2/me", { auth: `Bearer ${accessToken}` });
-}
+// Authentication is validated exclusively through App Studio.
+export { verifyAccessToken } from "./pi-login.js";
 
 export const getPayment = (paymentId: string) =>
   piRequest<PiPayment>(`/v2/payments/${encodeURIComponent(paymentId)}`, { auth: keyAuth() });
