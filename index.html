@@ -3,42 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Taxipic</title>
+    <title>Taxipic - Pi App</title>
     <!-- استدعاء مكتبة Pi SDK الرسمية -->
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 </head>
-<body>
-    <div style="text-align: center; margin-top: 50px; font-family: sans-serif;">
-        <h2>Taxipic - Pi App</h2>
-        <p>Authenticating with Pi Network...</p>
-        <button id="login-btn" style="padding: 10px 20px; font-size: 16px; background-color: #7b1fa2; color: white; border: none; border-radius: 5px; cursor: pointer;">Sign in with Pi</button>
-    </div>
+<body style="text-align: center; font-family: Arial, sans-serif; margin-top: 50px;">
+    <h2>Taxipic - Pi App</h2>
+    <p>Authenticating with Pi Network...</p>
+    <button id="auth-btn" style="padding: 12px 24px; font-size: 16px; background-color: #7b1fa2; color: white; border: none; border-radius: 5px; cursor: pointer;">Sign in with Pi</button>
 
     <script>
-        // تهيئة Pi SDK (استخدم sandbox: true للتستنت أو false للميننت)
+        // تهيئة Pi SDK
         Pi.init({ version: "2.0", sandbox: true });
 
-        async function authWithPi() {
+        document.getElementById("auth-btn").addEventListener("click", async () => {
             try {
                 const scopes = ['username', 'payments'];
                 const authResult = await Pi.authenticate(scopes, onIncompletePaymentFound);
-                console.log("Authentication successful", authResult);
+                console.log(`Success! Logged in as ${authResult.user.username}`);
             } catch (error) {
-                console.error("Authentication error", error);
+                console.error("Authentication failed", error);
             }
-        }
+        });
 
         function onIncompletePaymentFound(payment) {
             console.log("Incomplete payment found", payment);
         }
-
-        // محاولة تسجيل الدخول عند الضغط أو تلقائياً
-        document.getElementById('login-btn').addEventListener('click', authWithPi);
-        
-        // محاولة التشغيل التلقائي بعد تحميل الصفحة بثوانٍ قليلة ليراها Pi Studio
-        window.onload = function() {
-            setTimeout(authWithPi, 1000);
-        };
     </script>
 </body>
 </html>
