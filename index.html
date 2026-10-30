@@ -4,31 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Taxipic - Pi App</title>
-    <!-- استدعاء مكتبة Pi SDK الرسمية -->
+    <meta name="description" content="Taxipic - ride-hailing, food delivery and merchant super app for the Pi Network">
+    <link rel="icon" href="/logo-taxi.png">
+    <!-- Official Pi SDK. Initialization happens once in pi-auth.js. -->
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; margin: 0; padding-top: 50px; }
+        #login-pi-btn { padding: 12px 24px; font-size: 16px; background-color: #7b1fa2; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
+        #login-pi-btn:disabled { opacity: .6; cursor: wait; }
+        #map { height: 60vh; max-width: 960px; margin: 24px auto 0; border-radius: 8px; }
+        #gps-status { font-size: 13px; color: #666; min-height: 1em; }
+    </style>
 </head>
-<body style="text-align: center; font-family: Arial, sans-serif; margin-top: 50px;">
+<body>
     <h2>Taxipic - Pi App</h2>
-    <p>Authenticating with Pi Network...</p>
-    <button id="auth-btn" style="padding: 12px 24px; font-size: 16px; background-color: #7b1fa2; color: white; border: none; border-radius: 5px; cursor: pointer;">Sign in with Pi</button>
+    <p id="pi-session-status">Authenticating with Pi Network...</p>
+    <button id="login-pi-btn" type="button">Sign in with Pi</button>
+    <p id="login-status" role="status" aria-live="polite"></p>
 
-    <script>
-        // تهيئة Pi SDK
-        Pi.init({ version: "2.0", sandbox: true });
+    <div id="map" aria-label="Map"></div>
+    <p id="gps-status" role="status" aria-live="polite"></p>
 
-        document.getElementById("auth-btn").addEventListener("click", async () => {
-            try {
-                const scopes = ['username', 'payments'];
-                const authResult = await Pi.authenticate(scopes, onIncompletePaymentFound);
-                console.log(`Success! Logged in as ${authResult.user.username}`);
-            } catch (error) {
-                console.error("Authentication failed", error);
-            }
-        });
-
-        function onIncompletePaymentFound(payment) {
-            console.log("Incomplete payment found", payment);
-        }
-    </script>
+    <script type="module" src="/pi-login.js"></script>
+    <script type="module" src="/map.js"></script>
 </body>
 </html>
