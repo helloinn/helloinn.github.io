@@ -7,7 +7,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "db:generate": "drizzle-kit generate"
+    "db:generate": "drizzle-kit generate",
+    "test": "node --test tests/*.test.mjs",
+    "token:issue": "node token/issue-token.mjs"
   },
   "dependencies": {
     "@netlify/database": "^2.0.1",

@@ -86,3 +86,17 @@ test('validation file has the exact static response bytes', async () => {
     const file = await readFile(new URL('../public/pi-app-validation.txt', import.meta.url));
     assert.equal(file.toString(), 'piappstudio-18OUnwGR6ppcOLo1OgvIhRo715GHDkBy');
 });
+
+test('subscription renewals stack on the current expiry', async () => {
+    const source = await readFile(new URL('../server/subscriptions.ts', import.meta.url), 'utf8');
+    const fn = source.match(/export function nextExpiry[\s\S]*?\n}\n/)[0];
+    const dir = await mkdtemp(join(tmpdir(), 'taxipic-sub-'));
+    try {
+        await writeFile(join(dir, 'm.mjs'), stripTypeScriptTypes(fn, { mode: 'transform' }));
+        const { nextExpiry } = await import(pathToFileURL(join(dir, 'm.mjs')));
+        const now = new Date('2026-01-01T00:00:00Z');
+        assert.equal(nextExpiry(null, 30, now).toISOString(), '2026-01-31T00:00:00.000Z');
+        assert.equal(nextExpiry(new Date('2026-01-10T00:00:00Z'), 30, now).toISOString(), '2026-02-09T00:00:00.000Z');
+        assert.equal(nextExpiry(new Date('2025-12-01T00:00:00Z'), 30, now).toISOString(), '2026-01-31T00:00:00.000Z');
+    } finally { await rm(dir, { recursive: true, force: true }); }
+});

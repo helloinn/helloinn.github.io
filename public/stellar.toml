@@ -1,0 +1,16 @@
+# Token metadata. Fill in after running token/issue-token.mjs,
+# then set TOKEN_HOME_DOMAIN=taxipic.netlify.app before issuing.
+NETWORK_PASSPHRASE = "Pi Testnet"
+
+[DOCUMENTATION]
+ORG_NAME = "Taxipic"
+ORG_URL = "https://taxipic.netlify.app"
+ORG_LOGO = "https://taxipic.netlify.app/logo-taxi.png"
+
+[[CURRENCIES]]
+code = "REPLACE_TOKEN_CODE"
+issuer = "REPLACE_ISSUER_PUBLIC_KEY"
+display_decimals = 7
+name = "Taxipic Token"
+desc = "Utility token for Taxipic rides, deliveries and subscriptions."
+image = "https://taxipic.netlify.app/logo-taxi.png"
