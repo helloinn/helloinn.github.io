@@ -1,2 +1,0 @@
-# Serve the Pi validation file with and without a trailing slash (HTTP 200, no redirect).
-/pi-app-validation.txt/   /pi-app-validation.txt   200!
