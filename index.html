@@ -1,30 +1,353 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Taxipic - Pi App</title>
+    <title>Taxipic</title>
     <meta name="description" content="Taxipic - ride-hailing, food delivery and merchant super app for the Pi Network">
     <link rel="icon" href="/logo-taxi.png">
-    <!-- Official Pi SDK. Initialization happens once in pi-auth.js. -->
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+    
+    <!-- Polices Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- IMPORTATION DE EMAILJS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+       (function(){
+          emailjs.init("qpFqoExr3hVCfHkIs"); 
+       })();
+    </script>
+
     <style>
-        body { text-align: center; font-family: Arial, sans-serif; margin: 0; padding-top: 50px; }
-        #login-pi-btn { padding: 12px 24px; font-size: 16px; background-color: #7b1fa2; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
-        #login-pi-btn:disabled { opacity: .6; cursor: wait; }
-        #map { height: 60vh; max-width: 960px; margin: 24px auto 0; border-radius: 8px; }
-        #gps-status { font-size: 13px; color: #666; min-height: 1em; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', 'Inter', sans-serif; }
+
+        body {
+            background: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%);
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; color: #fff; overflow: hidden; position: relative;
+        }
+
+        .bg-glow {
+            position: absolute; width: 600px; height: 600px;
+            background: linear-gradient(135deg, rgba(255, 204, 0, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+            filter: blur(80px); border-radius: 50%; top: -100px; right: -100px; z-index: 1;
+        }
+
+        .container {
+            position: relative; z-index: 2; width: 90%; max-width: 450px;
+            background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px;
+            padding: 30px; display: flex; flex-direction: column;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); transition: all 0.3s ease;
+        }
+
+        /* Header & Languages */
+        .header-row { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .language-menu { display: flex; gap: 10px; background: rgba(0, 0, 0, 0.2); padding: 6px 12px; border-radius: 15px; border: 1px solid rgba(255, 255, 255, 0.05); }
+        .lang-option { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; opacity: 0.5; transition: opacity 0.3s ease; }
+        .lang-option.active { opacity: 1; }
+        .lang-option img { width: 22px; height: 15px; border-radius: 3px; object-fit: cover; }
+        .lang-option span { font-size: 0.7rem; font-weight: 600; }
+
+        /* Buttons */
+        .btn-small { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.15); color: #ffffff; padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.3s ease; }
+        .btn-small:hover { background: rgba(255, 255, 255, 0.2); }
+        
+        .btn { width: 100%; padding: 14px; border-radius: 12px; border: none; font-size: 1rem; font-weight: 700; cursor: pointer; transition: 0.3s ease; margin-bottom: 15px; }
+        
+        /* BOUTONS JAUNES TAXI */
+        .btn-primary { background: #FFCC00; color: #090a0f; }
+        .btn-primary:hover { background: #E6B800; transform: translateY(-2px); }
+        
+        .btn-pi { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; display: flex; align-items: center; justify-content: center; gap: 10px; }
+
+        /* Role Selector */
+        .role-selector {
+            display: flex; background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px; margin-bottom: 20px; overflow: hidden;
+        }
+        .role-btn {
+            flex: 1; padding: 12px; background: transparent; border: none; color: rgba(255, 255, 255, 0.4);
+            font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: 0.3s ease;
+        }
+        .role-btn.active { background: rgba(255, 255, 255, 0.1); color: #fff; box-shadow: 0 0 10px rgba(0,0,0,0.2); }
+
+        /* Home View */
+        .logo-area { text-align: center; margin: 10px 0 40px 0; }
+        .logo-img { max-width: 250px; width: 100%; filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.4)); }
+        
+        .search-bar { width: 100%; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 16px 20px; display: flex; align-items: center; gap: 15px; cursor: pointer; transition: 0.3s; }
+        .search-bar:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 204, 0, 0.3); }
+        .search-bar i { color: #FFCC00; font-size: 1.3rem; filter: drop-shadow(0 0 5px rgba(255, 204, 0, 0.4)); }
+        .search-bar span { color: rgba(255, 255, 255, 0.5); font-weight: 500; font-size: 1.05rem; }
+
+        /* Forms */
+        h2 { text-align: center; margin-bottom: 20px; font-size: 1.4rem; font-weight: 700; }
+        .input-group { margin-bottom: 15px; }
+        .input-group input { width: 100%; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 14px; color: #fff; font-size: 1rem; outline: none; transition: border-color 0.3s; }
+        .input-group input:focus { border-color: #FFCC00; }
+        
+        .divider { text-align: center; margin: 10px 0 20px; position: relative; }
+        .divider::before, .divider::after { content: ''; position: absolute; top: 50%; width: 35%; height: 1px; background: rgba(255, 255, 255, 0.1); }
+        .divider::before { right: 0; } .divider::after { left: 0; }
+        .divider span { color: rgba(255, 255, 255, 0.5); font-size: 0.9rem; padding: 0 10px; font-weight: 500; }
+        
+        .link-text { text-align: center; margin-top: 10px; font-size: 0.9rem; }
+        .link-text a { color: #FFCC00; text-decoration: none; font-weight: 600; cursor: pointer; }
+        .link-text a:hover { text-decoration: underline; }
+
+        /* Map */
+        .map-wrapper { width: 100%; height: 280px; border-radius: 16px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 15px; position: relative; }
+        #leaflet-map { width: 100%; height: 100%; background: #000; }
+        .taxi-marker { font-size: 24px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); animation: bounce 2s infinite ease-in-out; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+
+        .hidden { display: none !important; }
+        .status-msg { text-align: center; font-size: 0.9rem; font-weight: 600; margin-top: 10px; padding: 0 10px;}
     </style>
 </head>
 <body>
-    <h2>Taxipic - Pi App</h2>
-    <p id="pi-session-status">Authenticating with Pi Network...</p>
-    <button id="login-pi-btn" type="button">Sign in with Pi</button>
-    <p id="login-status" role="status" aria-live="polite"></p>
 
-    <div id="map" aria-label="Map"></div>
-    <p id="gps-status" role="status" aria-live="polite"></p>
+    <div class="bg-glow"></div>
 
+    <main class="container">
+        
+        <!-- HEADER PARTAGÉ -->
+        <div class="header-row">
+            <button class="btn-small" id="top-action-btn">تسجيل الدخول عبر Pi</button>
+            <div class="language-menu">
+                <div class="lang-option active"><img src="https://flagcdn.com/sa.svg" alt="AR"><span>AR</span></div>
+                <div class="lang-option"><img src="https://flagcdn.com/fr.svg" alt="FR"><span>FR</span></div>
+                <div class="lang-option"><img src="https://flagcdn.com/gb.svg" alt="EN"><span>EN</span></div>
+            </div>
+        </div>
+
+        <!-- ================= VUE 1 : ACCUEIL ================= -->
+        <div id="home-view">
+            <p id="pi-session-status" class="status-msg" role="status" aria-live="polite"></p>
+            <div class="logo-area">
+                <img src="logo-taxi.png" alt="Taxipic Logo" class="logo-img">
+            </div>
+            <div class="search-bar" id="open-map-btn">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <span id="search-text-ui">بحث عن سيارة أجرة...</span>
+            </div>
+        </div>
+
+        <!-- ================= VUE 2 : CARTE ================= -->
+        <div id="map-view" class="hidden">
+            <h2 id="map-title">أين أنت؟</h2>
+            <button class="btn btn-primary" id="locate-btn" style="display: flex; justify-content: center; gap: 10px; align-items: center;">
+                <i class="fa-solid fa-location-crosshairs"></i> <span id="locate-text">تحديد موقعي</span>
+            </button>
+            <div class="map-wrapper"><div id="leaflet-map"></div></div>
+            <p id="map-status" class="status-msg"></p>
+        </div>
+
+        <!-- ================= VUE 3 : CONNEXION ================= -->
+        <div id="login-view" class="hidden">
+            <h2 id="login-title">تسجيل دخول المستخدم</h2>
+            
+            <div class="role-selector">
+                <button type="button" class="role-btn active" id="login-role-client">عميل</button>
+                <button type="button" class="role-btn" id="login-role-driver">سائق</button>
+            </div>
+
+            <div class="input-group"><input type="text" id="login-email" placeholder="البريد الإلكتروني أو رقم الهاتف"></div>
+            <div class="input-group"><input type="password" id="login-password" placeholder="كلمة المرور"></div>
+            
+            <button class="btn btn-primary" id="login-btn">تسجيل الدخول</button>
+            <p id="login-status" class="status-msg"></p>
+
+            <div class="divider"><span id="login-or">أو</span></div>
+            <button class="btn btn-pi" id="login-pi-btn">تسجيل الدخول عبر Pi</button>
+            <div class="link-text"><a id="go-to-register">ليس لديك حساب؟ إنشاء حساب</a></div>
+        </div>
+
+        <!-- ================= VUE 4 : INSCRIPTION ================= -->
+        <div id="register-view" class="hidden">
+            <h2 id="register-title">إنشاء حساب جديد</h2>
+
+            <div class="role-selector">
+                <button type="button" class="role-btn active" id="register-role-client">عميل</button>
+                <button type="button" class="role-btn" id="register-role-driver">سائق</button>
+            </div>
+
+            <div class="input-group"><input type="text" id="register-name" placeholder="الاسم الكامل"></div>
+            <div class="input-group"><input type="email" id="register-email" placeholder="البريد الإلكتروني أو رقم الهاتف"></div>
+            <div class="input-group"><input type="password" id="register-password" placeholder="كلمة المرور"></div>
+            
+            <button class="btn btn-primary" id="register-btn">إنشاء حساب</button>
+            <p id="register-status" class="status-msg"></p>
+
+            <div class="link-text"><a id="go-to-login">لديك حساب بالفعل؟ تسجيل الدخول</a></div>
+        </div>
+
+    </main>
+
+    <script>
+        const translations = {
+            'AR': {
+                topActionHome: 'تسجيل الدخول عبر Pi', topActionBack: '➔ رجوع', search: 'بحث عن سيارة أجرة...',
+                loginTitle: 'تسجيل دخول المستخدم', emailPlaceholder: 'البريد الإلكتروني أو رقم الهاتف', passwordPlaceholder: 'كلمة المرور', 
+                loginBtn: 'تسجيل الدخول', orText: 'أو', piBtn: 'تسجيل الدخول عبر Pi', goToRegister: 'ليس لديك حساب؟ إنشاء حساب',
+                registerTitle: 'إنشاء حساب جديد', namePlaceholder: 'الاسم الكامل', registerBtn: 'إنشاء حساب', goToLogin: 'لديك حساب بالفعل؟ تسجيل الدخول',
+                mapTitle: 'أين أنت؟', locateBtn: 'تحديد موقعي', mapStatusLocating: 'جاري البحث عن موقعك...', mapStatusFound: 'تم تحديد موقعك! سيارات الأجرة متاحة.',
+                errEmpty: 'يرجى ملء جميع الحقول.', statusSending: 'جاري إنشاء الحساب...', statusSuccess: 'تم إنشاء الحساب! تحقق من بريدك.', statusError: 'حدث خطأ. حاول مرة أخرى.',
+                roleClient: 'عميل', roleDriver: 'سائق', loginDevMsg: 'تسجيل الدخول غير متاح حاليا',
+                dir: 'rtl'
+            },
+            'FR': {
+                topActionHome: 'Connexion Pi', topActionBack: '➔ Retour', search: 'Chercher un taxi...',
+                loginTitle: 'Accès Utilisateur', emailPlaceholder: 'E-mail ou Numéro', passwordPlaceholder: 'Mot de passe', 
+                loginBtn: 'Se connecter', orText: 'OU', piBtn: 'Connexion Pi', goToRegister: 'Pas de compte ? Créer un compte',
+                registerTitle: 'Créer un compte', namePlaceholder: 'Nom complet', registerBtn: 'S\'inscrire', goToLogin: 'Déjà un compte ? Se connecter',
+                mapTitle: 'Où êtes-vous ?', locateBtn: 'Détecter ma position', mapStatusLocating: 'Recherche de votre position...', mapStatusFound: 'Position trouvée ! Taxis disponibles.',
+                errEmpty: 'Veuillez remplir tous les champs.', statusSending: 'Création en cours...', statusSuccess: 'Compte créé ! Vérifiez votre e-mail.', statusError: 'Une erreur est survenue.',
+                roleClient: 'Client', roleDriver: 'Conducteur', loginDevMsg: 'Connexion en cours de configuration',
+                dir: 'ltr'
+            },
+            'EN': {
+                topActionHome: 'Pi Sign-In', topActionBack: '➔ Back', search: 'Search for a taxi...',
+                loginTitle: 'User Access', emailPlaceholder: 'Email or Phone Number', passwordPlaceholder: 'Password', 
+                loginBtn: 'Login', orText: 'OR', piBtn: 'Pi Sign-In', goToRegister: 'Don\'t have an account? Sign up',
+                registerTitle: 'Create an Account', namePlaceholder: 'Full Name', registerBtn: 'Sign Up', goToLogin: 'Already have an account? Login',
+                mapTitle: 'Where are you?', locateBtn: 'Detect my location', mapStatusLocating: 'Locating you...', mapStatusFound: 'Location found! Cabs available.',
+                errEmpty: 'Please fill in all fields.', statusSending: 'Creating account...', statusSuccess: 'Account created! Check your email.', statusError: 'An error occurred.',
+                roleClient: 'Client', roleDriver: 'Driver', loginDevMsg: 'Login currently unavailable',
+                dir: 'ltr'
+            }
+        };
+
+        let currentLang = 'AR';
+        let currentView = 'home';
+        let currentRole = 'Client'; 
+
+        const htmlTag = document.documentElement;
+        const langOptions = document.querySelectorAll('.lang-option');
+        const views = { home: document.getElementById('home-view'), login: document.getElementById('login-view'), register: document.getElementById('register-view'), map: document.getElementById('map-view') };
+        const topActionBtn = document.getElementById('top-action-btn');
+
+        // La carte (Leaflet + GPS haute précision) est gérée par map.js.
+
+        // --- BOUTONS DE RÔLES ---
+        function setupRoleToggle(clientBtnId, driverBtnId) {
+            const clientBtn = document.getElementById(clientBtnId);
+            const driverBtn = document.getElementById(driverBtnId);
+            clientBtn.addEventListener('click', (e) => {
+                e.preventDefault(); clientBtn.classList.add('active'); driverBtn.classList.remove('active'); currentRole = 'Client';
+            });
+            driverBtn.addEventListener('click', (e) => {
+                e.preventDefault(); driverBtn.classList.add('active'); clientBtn.classList.remove('active'); currentRole = 'Conducteur';
+            });
+        }
+        setupRoleToggle('login-role-client', 'login-role-driver');
+        setupRoleToggle('register-role-client', 'register-role-driver');
+
+        // --- BOUTON DE CONNEXION ---
+        document.getElementById('login-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const pass = document.getElementById('login-password').value;
+            const statusMsg = document.getElementById('login-status');
+            
+            if(!email || !pass) {
+                statusMsg.innerText = translations[currentLang].errEmpty;
+                statusMsg.style.color = "#ff4d4d";
+            } else {
+                statusMsg.innerText = translations[currentLang].loginDevMsg;
+                statusMsg.style.color = "#FFCC00";
+            }
+        });
+
+        // --- INSCRIPTION EMAILJS ---
+        document.getElementById('register-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const statusMsg = document.getElementById('register-status');
+            const data = translations[currentLang];
+
+            if(!name || !email || !password) {
+                statusMsg.innerText = data.errEmpty;
+                statusMsg.style.color = "#ff4d4d"; return;
+            }
+
+            statusMsg.innerText = data.statusSending; statusMsg.style.color = "#FFCC00";
+
+            const templateParams = {
+                user_name: name,
+                user_email: email,
+                user_role: currentRole
+            };
+
+            emailjs.send('service_ebeqht9', 'vt97o33', templateParams)
+                .then(function(response) {
+                    statusMsg.innerText = data.statusSuccess; statusMsg.style.color = "#4CAF50";
+                    document.getElementById('register-name').value = ''; 
+                    document.getElementById('register-email').value = ''; 
+                    document.getElementById('register-password').value = '';
+                }, function(error) {
+                    statusMsg.innerText = data.statusError; 
+                    statusMsg.style.color = "#ff4d4d"; 
+                    console.error("EmailJS Error:", error);
+                });
+        });
+
+        // --- NAVIGATION ET TRADUCTION ---
+        function switchView(viewName) {
+            currentView = viewName;
+            Object.values(views).forEach(v => v.classList.add('hidden')); views[viewName].classList.remove('hidden');
+            if (viewName === 'map') window.dispatchEvent(new CustomEvent('taxipic:show-map'));
+            document.querySelectorAll('.status-msg').forEach(el => el.innerText = ""); 
+            updateText();
+        }
+
+        function updateText() {
+            const data = translations[currentLang];
+            htmlTag.setAttribute('dir', data.dir); htmlTag.setAttribute('lang', currentLang.toLowerCase());
+            topActionBtn.innerText = currentView === 'home' ? data.topActionHome : data.topActionBack;
+            document.getElementById('search-text-ui').innerText = data.search;
+            document.getElementById('login-title').innerText = data.loginTitle;
+            document.getElementById('login-email').placeholder = data.emailPlaceholder;
+            document.getElementById('login-password').placeholder = data.passwordPlaceholder;
+            document.getElementById('login-btn').innerText = data.loginBtn;
+            document.getElementById('login-or').innerText = data.orText;
+            document.getElementById('login-pi-btn').innerText = data.piBtn;
+            document.getElementById('go-to-register').innerText = data.goToRegister;
+            document.getElementById('login-role-client').innerText = data.roleClient;
+            document.getElementById('login-role-driver').innerText = data.roleDriver;
+            document.getElementById('register-title').innerText = data.registerTitle;
+            document.getElementById('register-name').placeholder = data.namePlaceholder;
+            document.getElementById('register-email').placeholder = data.emailPlaceholder;
+            document.getElementById('register-password').placeholder = data.passwordPlaceholder;
+            document.getElementById('register-btn').innerText = data.registerBtn;
+            document.getElementById('go-to-login').innerText = data.goToLogin;
+            document.getElementById('register-role-client').innerText = data.roleClient;
+            document.getElementById('register-role-driver').innerText = data.roleDriver;
+            document.getElementById('map-title').innerText = data.mapTitle;
+            document.getElementById('locate-text').innerText = data.locateBtn;
+        }
+
+        langOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                langOptions.forEach(opt => opt.classList.remove('active')); this.classList.add('active');
+                currentLang = this.querySelector('span').innerText; updateText();
+            });
+        });
+
+        topActionBtn.addEventListener('click', function() { if (currentView === 'home') switchView('login'); else switchView('home'); });
+        document.getElementById('open-map-btn').addEventListener('click', () => switchView('map'));
+        document.getElementById('go-to-register').addEventListener('click', () => switchView('register'));
+        document.getElementById('go-to-login').addEventListener('click', () => switchView('login'));
+    </script>
     <script type="module" src="/pi-login.js"></script>
     <script type="module" src="/map.js"></script>
 </body>
