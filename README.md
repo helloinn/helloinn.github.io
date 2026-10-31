@@ -57,8 +57,8 @@ Seeds and keys are **never** committed. See [`DEVELOPER_REQUIREMENTS.md`](DEVELO
 
 ## Pi Studio / domain
 
-- App URL in Pi Studio: `https://taxipic.netlify.app`
-- `https://taxipic.netlify.app/pi-app-validation.txt` and `.../pi-app-validation.txt/` must both return HTTP 200 with no redirect (handled by `public/_redirects`).
+- App URL in Pi Studio: `https://taxipick.netlify.app`
+- `https://taxipick.netlify.app/pi-app-validation.txt` is served as a plain static file from `public/` (no route, handler or redirect).
 - Production must be publicly accessible in Netlify visitor access settings.
 - No custom domain or GitHub Pages `CNAME` is used.
 

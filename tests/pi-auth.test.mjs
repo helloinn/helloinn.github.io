@@ -84,7 +84,7 @@ test('server trusts only App Studio identity and does not create sessions on fai
 
 test('validation file has the exact static response bytes', async () => {
     const file = await readFile(new URL('../public/pi-app-validation.txt', import.meta.url));
-    assert.equal(file.toString(), 'piappstudio-18OUnwGR6ppcOLo1OgvIhRo715GHDkBy');
+    assert.equal(file.toString(), 'piappstudio-kzwy_xF4sunxgeFOHDZJ7joq7fvCc7Ew');
 });
 
 test('subscription renewals stack on the current expiry', async () => {
