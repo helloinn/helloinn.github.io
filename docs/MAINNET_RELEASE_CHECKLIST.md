@@ -4,6 +4,11 @@
 
 Pi Developer Portal fixes the network when an app is registered. A Testnet app and a Mainnet app must be registered separately; do not assume that changing a frontend setting converts one into the other.
 
+Official Pi references:
+- [Register Your App](https://developers.minepi.com/docs/build-first-app/RegisterApp)
+- [Pi Platform API](https://developers.minepi.com/docs/api-reference/PlatformAPI)
+- [Using Pi URLs](https://developers.minepi.com/docs/build-first-app/urls)
+
 Use separate:
 - Pi Developer Portal app records and app URLs
 - Server API keys
