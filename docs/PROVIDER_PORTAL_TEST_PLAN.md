@@ -5,7 +5,7 @@ This plan covers the provider portal at `/provider-portal.html` and the authenti
 ## Test environment
 
 - Use a dedicated Pi Testnet Developer Portal app and a non-production deployment.
-- Use a disposable test database with migration `0002_provider_marketplace.sql` applied.
+- Use a disposable test database with migration `20261109094312_provider_marketplace.sql` applied.
 - Use two different Pi test accounts: Provider A and Provider B.
 - Do not use production API keys, wallet seeds, customer data or live Pi.
 
