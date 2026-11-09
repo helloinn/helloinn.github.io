@@ -23,14 +23,32 @@ async function getOwnedMerchant(userId: string) {
   const [merchant] = await db.select().from(merchants).where(eq(merchants.ownerId, userId)).limit(1);
   return merchant ?? null;
 }
+function optionalHttpsUrl(value: unknown, max = 500): string | undefined {
+  const raw = optionalString(value, max);
+  if (!raw) return undefined;
+  try {
+    const parsed = new URL(raw);
+    if (parsed.protocol !== "https:") throw new Error("https required");
+  } catch {
+    throw new HttpError(400, "Image URLs must be valid HTTPS URLs");
+  }
+  return raw;
+}
+
 function cleanOptions(value: unknown) {
   if (value === undefined) return [];
   if (!Array.isArray(value)) throw new HttpError(400, "Options must be a list");
-  return value.slice(0, 20).map((entry) => {
+  if (value.length > 20) throw new HttpError(400, "Too many option groups");
+  return value.map((entry) => {
     if (!entry || typeof entry !== "object") throw new HttpError(400, "Invalid option group");
     const group = entry as { name?: unknown; values?: unknown };
-    if (typeof group.name !== "string" || !Array.isArray(group.values)) throw new HttpError(400, "Invalid option group");
-    return { name: group.name.trim().slice(0, 60), values: group.values.filter((v): v is string => typeof v === "string").slice(0, 20).map(v => v.slice(0, 60)) };
+    if (typeof group.name !== "string" || !group.name.trim() || !Array.isArray(group.values) || !group.values.length || group.values.length > 20) {
+      throw new HttpError(400, "Each option group needs a name and 1–20 values");
+    }
+    if (group.values.some((v) => typeof v !== "string" || !v.trim() || v.length > 60)) {
+      throw new HttpError(400, "Option values must be non-empty strings of at most 60 characters");
+    }
+    return { name: group.name.trim().slice(0, 60), values: group.values.map((v: string) => v.trim()) };
   });
 }
 
@@ -55,7 +73,7 @@ const handler = router([
     const values = {
       ownerId: user.id, businessName, merchantType: type, templateKey: templateFor(type), serviceMode,
       description: optionalString(body.description, 1000) ?? "", cuisine: optionalString(body.cuisine, 60) ?? "",
-      latitude, longitude, address, logoUrl: optionalString(body.logoUrl, 500), coverUrl: optionalString(body.coverUrl, 500),
+      latitude, longitude, address, logoUrl: optionalHttpsUrl(body.logoUrl), coverUrl: optionalHttpsUrl(body.coverUrl),
     };
     const [merchant] = await db.insert(merchants).values(values)
       .onConflictDoUpdate({ target: merchants.ownerId, set: { ...values, ownerId: user.id } }).returning();
@@ -79,7 +97,7 @@ const handler = router([
       category: optionalString(body.category, 60) ?? "",
       sku: optionalString(body.sku, 80), stockQuantity,
       unit: optionalString(body.unit, 30) ?? (itemType === "SERVICE" ? "service" : "item"),
-      imageUrl: optionalString(body.imageUrl, 500), options: cleanOptions(body.options),
+      imageUrl: optionalHttpsUrl(body.imageUrl), options: cleanOptions(body.options),
       isAvailable: body.isAvailable !== false,
     }).returning();
     return Response.json({ item }, { status: 201 });
@@ -92,9 +110,23 @@ const handler = router([
     const values: Partial<typeof menuItems.$inferInsert> = {};
     if (body.title !== undefined) values.title = requireString(body.title, "title", 150);
     if (body.pricePi !== undefined) values.pricePi = requireNumber(body.pricePi, "pricePi", 0.0000001, 100000000);
-    if (body.isAvailable !== undefined) values.isAvailable = body.isAvailable === true;
+    if (body.isAvailable !== undefined) {
+      if (typeof body.isAvailable !== "boolean") throw new HttpError(400, "isAvailable must be a boolean");
+      values.isAvailable = body.isAvailable;
+    }
     if (body.stockQuantity !== undefined) values.stockQuantity = body.stockQuantity === null ? null : requireNumber(body.stockQuantity, "stockQuantity", 0, 100000000);
     if (body.description !== undefined) values.description = optionalString(body.description, 1000) ?? "";
+    if (body.category !== undefined) values.category = optionalString(body.category, 60) ?? "";
+    if (body.itemType !== undefined) {
+      if (body.itemType !== "PRODUCT" && body.itemType !== "SERVICE") throw new HttpError(400, "itemType must be PRODUCT or SERVICE");
+      values.itemType = body.itemType;
+    }
+    if (body.sku !== undefined) values.sku = optionalString(body.sku, 80);
+    if (body.unit !== undefined) values.unit = optionalString(body.unit, 30) ?? "item";
+    if (body.imageUrl !== undefined) values.imageUrl = optionalHttpsUrl(body.imageUrl);
+    if (body.options !== undefined) values.options = cleanOptions(body.options);
+    if (body.details !== undefined) values.ingredients = optionalString(body.details, 1000) ?? "";
+    if (!Object.keys(values).length) throw new HttpError(400, "No supported fields were supplied");
     const [item] = await db.update(menuItems).set(values).where(and(eq(menuItems.id, params.id), eq(menuItems.merchantId, merchant.id))).returning();
     if (!item) throw new HttpError(404, "Catalog item not found");
     return Response.json({ item });
