@@ -10,13 +10,14 @@ const providerTypes = new Set([
   "FASHION", "ELECTRONICS", "BEAUTY_SALON", "BARBER", "LAUNDRY", "HOME_SERVICES",
   "AUTO_SERVICE", "FLOWERS", "BOOKSTORE", "OTHER",
 ]);
-const templateFor = (type: string) => ({
+const templates: Record<string, string> = {
   RESTAURANT: "restaurant", SUPERMARKET: "supermarket", GROCERY: "grocery",
   JUICE_SHOP: "juice-bar", BAKERY: "bakery", PHARMACY: "pharmacy",
   FASHION: "fashion", ELECTRONICS: "electronics", BEAUTY_SALON: "salon",
   BARBER: "barber", LAUNDRY: "laundry", HOME_SERVICES: "home-services",
   AUTO_SERVICE: "auto-service", FLOWERS: "florist", BOOKSTORE: "bookstore", OTHER: "general",
-}[type] ?? "general");
+};
+const templateFor = (type: string) => templates[type] ?? "general";
 
 async function getOwnedMerchant(userId: string) {
   const [merchant] = await db.select().from(merchants).where(eq(merchants.ownerId, userId)).limit(1);
