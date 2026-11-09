@@ -33,6 +33,9 @@ test("provider API contains every category and owner-scoped catalog mutations", 
   assert.match(api, /DELETE", "\/api\/provider\/items\/:id"/);
   assert.match(api, /eq\(menuItems\.merchantId, merchant\.id\)/);
   assert.match(api, /eq\(menuItems\.merchantId, merchant\.id\)\)\)\.returning/);
+  assert.match(api, /function optionalHttpsUrl/);
+  assert.match(api, /parsed\.protocol !== "https:"/);
+  assert.match(api, /Too many option groups/);
 });
 
 test("provider portal has Pi authentication and accessible status feedback", async () => {
