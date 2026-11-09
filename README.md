@@ -19,6 +19,7 @@ Ride-hailing, food delivery and merchant super app for the **Pi Network**.
 - **Pi payments** — User-to-App (approve/complete) and App-to-User payouts.
 - **Subscriptions** — VIP and Merchant monthly plans (`server/subscriptions.ts`), activated only after a completed Pi payment; renewals stack.
 - **App token** — issuance script for a Taxipic token on Pi Testnet/Mainnet (`token/issue-token.mjs`).
+- **Provider marketplace portal** — dedicated templates for restaurants, supermarkets, groceries, juice shops, bakeries, pharmacies, retail stores and local service providers; each provider manages an independent product/service catalog, prices, stock and availability. Open `/provider-portal.html`.
 - **Rewards** — XP, levels, badges and reputation.
 
 ## Project structure
@@ -58,7 +59,7 @@ Seeds and keys are **never** committed. See [`DEVELOPER_REQUIREMENTS.md`](DEVELO
 ## Pi Studio / domain
 
 - App URL in Pi Studio: `https://taxipick.netlify.app`
-- `https://taxipick.netlify.app/pi-app-validation.txt` is served as a plain static file from `public/` (no route, handler or redirect).
+- `https://taxipic.netlify.app/pi-app-validation.txt` is served as a plain static file from `public/` (no route, handler or redirect).
 - Production must be publicly accessible in Netlify visitor access settings.
 - No custom domain or GitHub Pages `CNAME` is used.
 
