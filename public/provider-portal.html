@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Taxipic | بوابة مزوّد الخدمة</title>
+<title>Taxipic | بوابة مزوّد الخدمة</title>\n<script src="https://sdk.minepi.com/pi-sdk.js"></script>
 <style>
 :root{color-scheme:dark;--bg:#09111f;--panel:#111d30;--line:#263954;--gold:#ffcc33;--muted:#9aacc4;--white:#f4f7fb}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 10% 0,#182e4b 0,transparent 35%),var(--bg);color:var(--white);font-family:Inter,"Noto Sans Arabic",Tahoma,sans-serif;min-height:100vh}
@@ -23,7 +23,7 @@ header{padding:24px clamp(16px,4vw,48px);display:flex;justify-content:space-betw
 </select><div class="template-note" id="template-note">قالب مطعم: أقسام الوجبات والإضافات والأحجام.</div></div>
 <div class="field"><label for="description">نبذة عن النشاط</label><textarea id="description" maxlength="1000" placeholder="وصف مختصر يساعد العملاء على معرفة نشاطك"></textarea></div>
 <div class="field"><label for="address">العنوان</label><input id="address" maxlength="255" placeholder="المدينة، الحي، الشارع"></div>
-<div class="row"><div class="field"><label for="latitude">خط العرض (اختياري)</label><input id="latitude" type="number" step="any" min="-90" max="90"></div><div class="field"><label for="longitude">خط الطول (اختياري)</label><input id="longitude" type="number" step="any" min="-180" max="180"></div></div>
+<div class="row"><div class="field"><label for="latitude">خط العرض</label><input id="latitude" type="number" step="any" min="-90" max="90" required></div><div class="field"><label for="longitude">خط الطول</label><input id="longitude" type="number" step="any" min="-180" max="180" required></div></div>
 <div class="field"><label for="serviceMode">طريقة تقديم الخدمة</label><select id="serviceMode"><option value="DELIVERY_AND_PICKUP">توصيل واستلام</option><option value="PICKUP_ONLY">استلام من المتجر</option><option value="ON_SITE">داخل موقع النشاط / حجز موعد</option></select></div>
 <button class="btn" type="submit">حفظ بيانات النشاط</button>
 </form></section>
