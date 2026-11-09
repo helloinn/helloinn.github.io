@@ -36,6 +36,8 @@ test("provider API contains every category and owner-scoped catalog mutations", 
   assert.match(api, /function optionalHttpsUrl/);
   assert.match(api, /parsed\.protocol !== "https:"/);
   assert.match(api, /Too many option groups/);
+  assert.match(api, /Unsupported service mode/);
+  assert.match(api, /itemType must be PRODUCT or SERVICE/);
 });
 
 test("provider portal has Pi authentication and accessible status feedback", async () => {
