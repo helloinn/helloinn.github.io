@@ -10,8 +10,9 @@ ALTER TABLE menu_items
   ADD COLUMN IF NOT EXISTS item_type varchar(20) NOT NULL DEFAULT 'PRODUCT',
   ADD COLUMN IF NOT EXISTS sku varchar(80),
   ADD COLUMN IF NOT EXISTS stock_quantity integer,
-  ADD COLUMN IF NOT NULL DEFAULT 'item',
-  ADD COLUMN IF NOT NULL DEFAULT '[]'::jsonb;
+  ADD COLUMN IF NOT EXISTS unit varchar(30) NOT NULL DEFAULT 'item',
+  ADD COLUMN IF NOT EXISTS image_url varchar(500),
+  ADD COLUMN IF NOT EXISTS options jsonb NOT NULL DEFAULT '[]'::jsonb;
 
 CREATE INDEX IF NOT EXISTS merchants_type_open_idx ON merchants (merchant_type, is_open);
 CREATE INDEX IF NOT EXISTS menu_items_merchant_available_idx ON menu_items (merchant_id, is_available);
