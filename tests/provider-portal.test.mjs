@@ -6,7 +6,7 @@ const read = (path) => readFile(new URL(path, import.meta.url), "utf8");
 
 test("provider schema and migration expose the same marketplace fields", async () => {
   const schema = await read("../db/schema.ts");
-  const migration = await read("../netlify/database/migrations/0002_provider_marketplace.sql");
+  const migration = await read("../netlify/database/migrations/20261109094312_provider_marketplace.sql");
   for (const field of ["merchantType", "templateKey", "serviceMode", "logoUrl", "coverUrl", "settings"]) {
     assert.match(schema, new RegExp("\\b" + field + "\\b"), `schema field missing: ${field}`);
   }
