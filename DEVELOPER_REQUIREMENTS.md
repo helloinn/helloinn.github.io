@@ -54,7 +54,7 @@ Fill in each `____` field, then send this completed file to the Netlify agent.
 | 4.8 | Home domain for `stellar.toml` (default `taxipic.netlify.app`) | ____ |
 | 4.9 | Issue on Testnet first, then Mainnet after Pi approval? (confirm) | ____ |
 
-Command: `npm run token:issue` (see `token/issue-token.mjs`).
+**Current implementation status:** token issuance is not included in the current repository release. The former `npm run token:issue` entry pointed to a script that is not present, so it has been removed rather than presenting a non-working command as available. Do not attempt Mainnet token issuance from this repository until a separately reviewed issuance tool, Testnet procedure, tests and operator approval are added.
 
 ## 5. Subscriptions
 
