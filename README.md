@@ -58,6 +58,7 @@ All provider endpoints require an authenticated app session. Catalog mutations a
 
 ```bash
 npm ci
+npm run typecheck
 npm test
 npm run build
 ```
@@ -132,7 +133,7 @@ See:
 - [Provider portal test plan](docs/PROVIDER_PORTAL_TEST_PLAN.md)
 - [Testnet-to-Mainnet release checklist](docs/MAINNET_RELEASE_CHECKLIST.md)
 
-GitHub Actions runs the automated Node test suite and production frontend build on pushes and pull requests. Passing CI is necessary, but does not replace live Pi Browser, database migration or payment testing.
+GitHub Actions type-checks the server/database TypeScript, runs the automated Node test suite and builds the production frontend on pushes and pull requests. Passing CI is necessary, but does not replace live Pi Browser, database migration or payment testing.
 
 ## Pi configuration
 
