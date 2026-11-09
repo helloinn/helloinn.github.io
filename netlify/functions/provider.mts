@@ -69,7 +69,10 @@ const handler = router([
     const latitude = requireNumber(body.latitude, "latitude", -90, 90);
     const longitude = requireNumber(body.longitude, "longitude", -180, 180);
     const address = optionalString(body.address, 255) ?? "";
-    const serviceMode = body.serviceMode === "PICKUP_ONLY" || body.serviceMode === "ON_SITE" ? body.serviceMode : "DELIVERY_AND_PICKUP";
+    const serviceMode = body.serviceMode ?? "DELIVERY_AND_PICKUP";
+    if (serviceMode !== "DELIVERY_AND_PICKUP" && serviceMode !== "PICKUP_ONLY" && serviceMode !== "ON_SITE") {
+      throw new HttpError(400, "Unsupported service mode");
+    }
     const values = {
       ownerId: user.id, businessName, merchantType: type, templateKey: templateFor(type), serviceMode,
       description: optionalString(body.description, 1000) ?? "", cuisine: optionalString(body.cuisine, 60) ?? "",
@@ -87,7 +90,8 @@ const handler = router([
     const body = await readJson<Record<string, unknown>>(req);
     const title = requireString(body.title, "title", 150);
     const pricePi = requireNumber(body.pricePi, "pricePi", 0.0000001, 100000000);
-    const itemType = body.itemType === "SERVICE" ? "SERVICE" : "PRODUCT";
+    const itemType = body.itemType ?? "PRODUCT";
+    if (itemType !== "PRODUCT" && itemType !== "SERVICE") throw new HttpError(400, "itemType must be PRODUCT or SERVICE");
     const stockQuantity = body.stockQuantity === "" || body.stockQuantity === undefined || body.stockQuantity === null
       ? null : requireNumber(body.stockQuantity, "stockQuantity", 0, 100000000);
     const [item] = await db.insert(menuItems).values({
