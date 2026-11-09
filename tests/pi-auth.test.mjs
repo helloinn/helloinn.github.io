@@ -89,7 +89,7 @@ test('validation file has the exact requested static response bytes', async () =
 
 test('subscription renewals stack on the current expiry', async () => {
     const source = await readFile(new URL('../server/subscriptions.ts', import.meta.url), 'utf8');
-    const fn = source.match(/export function nextExpiry[\\s\\S]*?\\n}\\n/)[0];
+    const fn = source.match(/export function nextExpiry[\s\S]*?\n}\n/)[0];
     const dir = await mkdtemp(join(tmpdir(), 'taxipic-sub-'));
     try {
         await writeFile(join(dir, 'm.mjs'), stripTypeScriptTypes(fn, { mode: 'transform' }));
