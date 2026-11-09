@@ -97,14 +97,21 @@ export async function sendAppToUserPayment(opts: {
   const payment = await getPayment(identifier);
 
   const { Horizon, Keypair, TransactionBuilder, Operation, Asset, Memo } = await import("@stellar/stellar-sdk");
-  const horizonUrl = payment.network === "Pi Network" ? "https://api.mainnet.minepi.com" : "https://api.testnet.minepi.com";
-  const horizon = new Horizon.Server(horizonUrl);
+  const networkConfig = payment.network === "Pi Network"
+    ? { horizonUrl: "https://api.mainnet.minepi.com", networkPassphrase: "Pi Network" }
+    : payment.network === "Pi Testnet"
+      ? { horizonUrl: "https://api.testnet.minepi.com", networkPassphrase: "Pi Testnet" }
+      : null;
+  if (!networkConfig) {
+    throw new HttpError(409, `Unsupported Pi payment network: ${payment.network}`);
+  }
+  const horizon = new Horizon.Server(networkConfig.horizonUrl);
   const keypair = Keypair.fromSecret(seed);
   const account = await horizon.loadAccount(keypair.publicKey());
   const baseFee = await horizon.fetchBaseFee();
   const timebounds = await horizon.fetchTimebounds(180);
 
-  const tx = new TransactionBuilder(account, { fee: String(baseFee), networkPassphrase: payment.network, timebounds })
+  const tx = new TransactionBuilder(account, { fee: String(baseFee), networkPassphrase: networkConfig.networkPassphrase, timebounds })
     .addOperation(
       Operation.payment({
         destination: payment.to_address,
