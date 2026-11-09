@@ -82,14 +82,14 @@ test('server trusts only App Studio identity and does not create sessions on fai
     }
 });
 
-test('validation file has the exact static response bytes', async () => {
+test('validation file has the exact requested static response bytes', async () => {
     const file = await readFile(new URL('../public/pi-app-validation.txt', import.meta.url));
-    assert.equal(file.toString(), 'piappstudio-kzwy_xF4sunxgeFOHDZJ7joq7fvCc7Ew');
+    assert.equal(file.toString(), 'piappstudio-18OUnwGR6ppcOLo1OgvIhRo715GHDkBy');
 });
 
 test('subscription renewals stack on the current expiry', async () => {
     const source = await readFile(new URL('../server/subscriptions.ts', import.meta.url), 'utf8');
-    const fn = source.match(/export function nextExpiry[\s\S]*?\n}\n/)[0];
+    const fn = source.match(/export function nextExpiry[\\s\\S]*?\\n}\\n/)[0];
     const dir = await mkdtemp(join(tmpdir(), 'taxipic-sub-'));
     try {
         await writeFile(join(dir, 'm.mjs'), stripTypeScriptTypes(fn, { mode: 'transform' }));
