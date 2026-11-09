@@ -32,7 +32,7 @@ test("provider API contains every category and owner-scoped catalog mutations", 
   assert.match(api, /PATCH", "\/api\/provider\/items\/:id"/);
   assert.match(api, /DELETE", "\/api\/provider\/items\/:id"/);
   assert.match(api, /eq\(menuItems\.merchantId, merchant\.id\)/);
-  assert.match(api, /eq\(menuItems\.merchantId, merchant\.id\)\)\.returning/);
+  assert.match(api, /eq\(menuItems\.merchantId, merchant\.id\)\)\)\.returning/);
 });
 
 test("provider portal has Pi authentication and accessible status feedback", async () => {
