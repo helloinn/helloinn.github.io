@@ -127,6 +127,10 @@ Set secrets in Netlify environment configuration, not in source control.
 
 Use different values and wallets for Testnet and Mainnet deployments. Never place private seeds in browser code, README files, issue comments or CI logs.
 
+## Deployment checks
+
+See [Netlify and Vercel deployment troubleshooting](docs/DEPLOYMENT_CHECKS.md) for the distinction between source-code CI failures, Netlify site configuration, and Vercel authorization checks.
+
 ## Developer test plan
 
 See:
