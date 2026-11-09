@@ -2,7 +2,7 @@ import { and, eq } from "drizzle-orm";
 import type { Config } from "@netlify/functions";
 import { db } from "../../db/index.js";
 import { merchants, menuItems, users } from "../../db/schema.js";
-import { optionalUser, requireUser } from "../../server/auth.js";
+import { requireUser } from "../../server/auth.js";
 import { HttpError, readJson, requireNumber, requireString, optionalString, router } from "../../server/http.js";
 
 const providerTypes = new Set([
@@ -47,8 +47,8 @@ const handler = router([
     const type = requireString(body.merchantType, "merchantType", 40).toUpperCase();
     if (!providerTypes.has(type)) throw new HttpError(400, "Unsupported provider category");
     const businessName = requireString(body.businessName, "businessName", 150);
-    const latitude = body.latitude === undefined || body.latitude === "" ? 0 : requireNumber(body.latitude, "latitude", -90, 90);
-    const longitude = body.longitude === undefined || body.longitude === "" ? 0 : requireNumber(body.longitude, "longitude", -180, 180);
+    const latitude = requireNumber(body.latitude, "latitude", -90, 90);
+    const longitude = requireNumber(body.longitude, "longitude", -180, 180);
     const address = optionalString(body.address, 255) ?? "";
     const serviceMode = body.serviceMode === "PICKUP_ONLY" || body.serviceMode === "ON_SITE" ? body.serviceMode : "DELIVERY_AND_PICKUP";
     const values = {
