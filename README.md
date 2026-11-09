@@ -78,7 +78,7 @@ Migration files are versioned in `netlify/database/migrations/`.
 The provider marketplace migration is:
 
 ```text
-netlify/database/migrations/0002_provider_marketplace.sql
+netlify/database/migrations/20261109094312_provider_marketplace.sql
 ```
 
 Before applying a migration:
@@ -87,7 +87,7 @@ Before applying a migration:
 3. Apply the SQL using the database migration workflow configured for the target Netlify site. If your deployment exposes a direct PostgreSQL connection, the equivalent controlled command is:
 
 ```bash
-psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f netlify/database/migrations/0002_provider_marketplace.sql
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f netlify/database/migrations/20261109094312_provider_marketplace.sql
 ```
 
 4. Verify the new columns and indexes, then run the provider portal smoke tests.
