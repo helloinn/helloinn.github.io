@@ -88,7 +88,7 @@ const handler = router([
     const merchant = await getOwnedMerchant(user.id);
     if (!merchant) throw new HttpError(404, "Provider profile not found");
     const body = await readJson<Record<string, unknown>>(req);
-    const values: Record<string, unknown> = {};
+    const values: Partial<typeof menuItems.$inferInsert> = {};
     if (body.title !== undefined) values.title = requireString(body.title, "title", 150);
     if (body.pricePi !== undefined) values.pricePi = requireNumber(body.pricePi, "pricePi", 0.0000001, 100000000);
     if (body.isAvailable !== undefined) values.isAvailable = body.isAvailable === true;
