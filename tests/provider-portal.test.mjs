@@ -48,4 +48,6 @@ test("provider portal has Pi authentication and accessible status feedback", asy
   assert.match(html, /id="merchantType"/);
   assert.match(html, /id="profile-form"/);
   assert.match(html, /id="item-form"/);
+  assert.match(html, /item-thumb/);
+  assert.match(html, /id="itemOptions"/);
 });
